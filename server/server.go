@@ -49,7 +49,6 @@ func NewServer() Server{
 func (server *Server)InitialiseRoutes() {
 	api := server.Router.Group("/api")
 	{
-		api.GET("/ping", pingHandler)
 		api.GET("/track", server.returnTrack)
 		api.GET("/video", server.returnVideo)
 		api.GET("/user/current", server.returnCurrentUser)
@@ -57,14 +56,6 @@ func (server *Server)InitialiseRoutes() {
 		api.GET("/user/playlists", server.returnCurrentUserPlaylists)
 	}
 }
-
-func pingHandler(c *gin.Context)  {
-	c.Header("Content-Type", "application/json")
-	c.JSON(http.StatusOK, gin.H {
-		"message": "pong",
-	})
-}
-
 
 func (server *Server)returnCurrentUser(c *gin.Context) {
 	client := server.SpotifyServer.Client
