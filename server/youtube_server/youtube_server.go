@@ -1,6 +1,7 @@
 package youtube_server
 
 import (
+	"fmt"
 	"google.golang.org/api/googleapi/transport"
 	"google.golang.org/api/youtube/v3"
 	"log"
@@ -48,7 +49,10 @@ func (youtubeClient *YoutubeClient)GetSong(search string) (string, error) {
 	call := youtubeClient.youtubeService.Search.List(part).
 		Q(search).
 		MaxResults(1).Order("relevance")
-	response, _ := call.Do()
+	response, err := call.Do()
+	if err != nil {
+		fmt.Print(err)
+	}
 	var url string
 	url = response.Items[0].Id.VideoId
 	return url, nil
