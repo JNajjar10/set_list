@@ -174,8 +174,17 @@ func (server *Server) returnCurrentUserPlaylists(c *gin.Context) {
 func (server *Server) returnPlaylistTracks(c *gin.Context) {
 	playlistID := spotify.ID(c.Param("id"))
 	client := server.SpotifyServer.Client
-	playlistTracksPage, _ := client.GetPlaylistTracks(playlistID)
+	limit := 100
+	offset := 0
+	playlistTracksPage, _ := client.GetPlaylistTracksOpt(playlistID,
+		&spotify.Options{Limit: &limit, Offset: &offset}, "")
 	playlistTracks := playlistTracksPage.Tracks
+	for len(playlistTracks) < playlistTracksPage.Total {
+		offset = len(playlistTracks)
+		playlistTracksPage, _ = client.GetPlaylistTracksOpt(playlistID,
+			&spotify.Options{Limit: &limit, Offset: &offset}, "")
+		playlistTracks = append(playlistTracks, playlistTracksPage.Tracks...)
+	}
 	c.Header("Content-Type", "application/json")
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.JSON(http.StatusOK, playlistTracks)
