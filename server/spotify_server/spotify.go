@@ -9,15 +9,13 @@ import (
 )
 
 type Spotify_server struct {
-	ch          chan *spotify.Client
-	redirectURI string
-	Client      *spotify.Client
+	ch     chan *spotify.Client
+	Client *spotify.Client
 }
 
 func New_Spotify_Server(redirectURI string) *Spotify_server {
 	s := &Spotify_server{
-		ch:          make(chan *spotify.Client),
-		redirectURI: redirectURI,
+		ch: make(chan *spotify.Client),
 	}
 	return s
 }
