@@ -8,10 +8,9 @@ import (
 	"spotifyMusicVideo/server/youtube_server"
 	"strings"
 
-	"golang.org/x/oauth2"
-
 	"github.com/gin-gonic/gin"
 	"github.com/zmb3/spotify"
+	"golang.org/x/oauth2"
 )
 
 type ID struct {
@@ -182,15 +181,10 @@ func (server *Server) returnPlaylistTracks(c *gin.Context) {
 	c.JSON(http.StatusOK, playlistTracks)
 }
 
+//Authenticates Spotify user's token with the server
 func (server *Server) authenticateSpotify(c *gin.Context) {
-	//accessToken := c.Param("token")
-	//fmt.Println(c.Request.Header)
 	accessToken := c.Request.Header.Get("Authorization")
-
-	token := &oauth2.Token{AccessToken: accessToken}
-	fmt.Print(token)
-	server.SpotifyServer.Authenticate(token)
-
+	server.SpotifyServer.Authenticate(&oauth2.Token{AccessToken: accessToken})
 	c.Header("Content-Type", "application/json")
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.JSON(http.StatusNoContent, "")
